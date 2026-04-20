@@ -5,3 +5,4 @@ __pycache__/
 .env
 reports/
 uv.lock
+*.DS_Store
