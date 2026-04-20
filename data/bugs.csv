@@ -1,0 +1,11 @@
+id,title,severity,component,status,reporter,created_date,description
+BUG-001,TypeError when creating a product,critical,products,open,qa_team,2026-04-10,"ProductService.create_product raises TypeError: can only concatenate str (not UUID) to str. Blocks all product creation flows."
+BUG-002,Stock not updated when setting value to zero,high,products,open,qa_team,2026-04-10,"Calling update_product with stock=0 silently keeps the previous stock value. Falsy check treats 0 as no update."
+BUG-003,Order can be cancelled multiple times,high,orders,open,qa_team,2026-04-11,"cancel_order has no status guard. Calling it on an already-cancelled order restores stock again, inflating inventory."
+BUG-004,Order total truncates decimal prices,medium,orders,open,qa_team,2026-04-11,"calculate_total returns an integer. Prices like 9.99 x 2 = 19.98 are returned as 19. Financial calculations are wrong."
+BUG-005,Password comparison is case-insensitive,critical,auth,open,security_team,2026-04-12,"authenticate() lowercases both passwords before comparing. 'Secret' and 'secret' are treated as the same password. Security vulnerability."
+BUG-006,Duplicate email allowed on registration,high,auth,open,qa_team,2026-04-12,"register() only checks username uniqueness. Two different accounts can share the same email address."
+BUG-007,No validation on product price at creation,low,products,open,qa_team,2026-04-13,"create_product accepts negative unit_price without raising an error. A product can be created with price=-50."
+BUG-008,Order references non-existent product without clear error,medium,orders,open,dev_team,2026-04-14,"If a product_id in order items does not exist, the error from get_product_stock propagates without context about which order caused it."
+BUG-009,UserService has no get_all_users method,low,auth,wont-fix,dev_team,2026-04-14,"No way to list all registered users. Requested by admin panel team. Deferred to next sprint."
+BUG-010,search_products returns Product objects not dicts,low,products,resolved,dev_team,2026-04-08,"API layer expected dicts but got Product objects. Fixed at the API layer — not a bug in ProductService itself."
