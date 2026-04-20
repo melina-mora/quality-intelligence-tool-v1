@@ -1,154 +1,252 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="31" time="0.057" timestamp="2026-04-20T11:47:46.288791+02:00" hostname="Meli-PC.local"><testcase classname="demo_suite.tests.test_orders.TestOrderCreation" name="test_create_order_success" time="0.000" /><testcase classname="demo_suite.tests.test_orders.TestOrderCreation" name="test_create_order_reduces_stock" time="0.000" /><testcase classname="demo_suite.tests.test_orders.TestOrderCreation" name="test_create_order_insufficient_stock_raises" time="0.000" /><testcase classname="demo_suite.tests.test_orders.TestOrderCreation" name="test_create_empty_order_raises" time="0.000" /><testcase classname="demo_suite.tests.test_orders.TestOrderCancellation" name="test_cancel_order_marks_as_cancelled" time="0.000" /><testcase classname="demo_suite.tests.test_orders.TestOrderCancellation" name="test_cancel_order_restores_stock" time="0.000" /><testcase classname="demo_suite.tests.test_orders.TestOrderCancellation" name="test_cancel_order_twice_does_not_double_restore" time="0.000"><failure message="AssertionError: assert 12 == 10&#10; +  where 12 = get_product_stock('prd-test-001')&#10; +    where get_product_stock = &lt;src.products.ProductService object at 0x10aec4490&gt;.get_product_stock&#10; +    and   'prd-test-001' = &lt;src.products.Product object at 0x10aec4380&gt;.id">self = &lt;test_orders.TestOrderCancellation object at 0x10aef88a0&gt;
-order_service = &lt;src.orders.OrdersService object at 0x10aec4270&gt;
-product_service = &lt;src.products.ProductService object at 0x10aec4490&gt;
-product = &lt;src.products.Product object at 0x10aec4380&gt;
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites name="pytest tests">
+    <testsuite name="pytest" errors="0" failures="8" skipped="0" tests="31" time="0.040"
+        timestamp="2026-04-20T17:33:51.190135+02:00" hostname="Meli-PC.local">
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCreation"
+            name="test_create_order_success" time="0.000" />
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCreation"
+            name="test_create_order_reduces_stock" time="0.000" />
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCreation"
+            name="test_create_order_insufficient_stock_raises" time="0.000" />
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCreation"
+            name="test_create_empty_order_raises" time="0.000" />
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCancellation"
+            name="test_cancel_order_marks_as_cancelled" time="0.000" />
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCancellation"
+            name="test_cancel_order_restores_stock" time="0.000" />
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCancellation"
+            name="test_cancel_order_twice_does_not_double_restore" time="0.000">
+            <failure
+                message="AssertionError: assert 12 == 10&#10; +  where 12 = get_product_stock('prd-test-001')&#10; +    where get_product_stock = &lt;src.products.ProductService object at 0x10b296ad0&gt;.get_product_stock&#10; +    and   'prd-test-001' = &lt;src.products.Product object at 0x10b2969c0&gt;.id">self
+                = &lt;test_orders.TestOrderCancellation object at 0x10b23fce0&gt;, order_service =
+                &lt;src.orders.OrdersService object at 0x10b295f20&gt;
+                product_service = &lt;src.products.ProductService object at 0x10b296ad0&gt;, product
+                = &lt;src.products.Product object at 0x10b2969c0&gt;
 
-    def test_cancel_order_twice_does_not_double_restore(self, order_service, product_service, product):
-        """Cancelling an already-cancelled order should not modify stock again."""
-        initial_stock = product.stock
-        order = order_service.create_order(
-            user_id='usr-001',
-            items=[{'product_id': product.id, 'quantity': 2}],
-            product_service=product_service
-        )
-        order_service.cancel_order(order.id, product_service)
-        order_service.cancel_order(order.id, product_service)  # second call
-&gt;       assert product_service.get_product_stock(product.id) == initial_stock
-E       AssertionError: assert 12 == 10
-E        +  where 12 = get_product_stock('prd-test-001')
-E        +    where get_product_stock = &lt;src.products.ProductService object at 0x10aec4490&gt;.get_product_stock
-E        +    and   'prd-test-001' = &lt;src.products.Product object at 0x10aec4380&gt;.id
+                def test_cancel_order_twice_does_not_double_restore(self, order_service,
+                product_service, product):
+                """Cancelling an already-cancelled order should not modify stock again."""
+                initial_stock = product.stock
+                order = order_service.create_order(
+                user_id='usr-001',
+                items=[{'product_id': product.id, 'quantity': 2}],
+                product_service=product_service
+                )
+                order_service.cancel_order(order.id, product_service)
+                order_service.cancel_order(order.id, product_service) # second call
+                &gt; assert product_service.get_product_stock(product.id) == initial_stock
+                E AssertionError: assert 12 == 10
+                E + where 12 = get_product_stock('prd-test-001')
+                E + where get_product_stock = &lt;src.products.ProductService object at
+                0x10b296ad0&gt;.get_product_stock
+                E + and 'prd-test-001' = &lt;src.products.Product object at 0x10b2969c0&gt;.id
+                demo_suite/tests/test_orders.py:79: AssertionError</failure>
+        </testcase>
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCalculations"
+            name="test_calculate_total_correct" time="0.000">
+            <failure
+                message="assert 1999 == 1999.98 ± 0.00199998&#10;  &#10;  comparison failed&#10;  Obtained: 1999&#10;  Expected: 1999.98 ± 0.00199998">self
+                = &lt;test_orders.TestOrderCalculations object at 0x10b27f110&gt;, order_service =
+                &lt;src.orders.OrdersService object at 0x10b297130&gt;
+                product_service = &lt;src.products.ProductService object at 0x10b297350&gt;, product
+                = &lt;src.products.Product object at 0x10b297240&gt;
 
-demo_suite/tests/test_orders.py:79: AssertionError</failure></testcase><testcase classname="demo_suite.tests.test_orders.TestOrderCalculations" name="test_calculate_total_correct" time="0.001"><failure message="assert 1999 == 1999.98 ± 0.00199998&#10;  &#10;  comparison failed&#10;  Obtained: 1999&#10;  Expected: 1999.98 ± 0.00199998">self = &lt;test_orders.TestOrderCalculations object at 0x10aef51d0&gt;
-order_service = &lt;src.orders.OrdersService object at 0x10aec4af0&gt;
-product_service = &lt;src.products.ProductService object at 0x10aec4d10&gt;
-product = &lt;src.products.Product object at 0x10aec4c00&gt;
+                def test_calculate_total_correct(self, order_service, product_service, product):
+                """Total should equal unit_price * quantity with decimal precision."""
+                # product.unit_price = 999.99, quantity = 2 → expected 1999.98
+                order = order_service.create_order(
+                user_id='usr-001',
+                items=[{'product_id': product.id, 'quantity': 2}],
+                product_service=product_service
+                )
+                total = order_service.calculate_total(order.id, product_service)
+                &gt; assert total == pytest.approx(1999.98)
+                E assert 1999 == 1999.98 ± 0.00199998
+                E
+                E comparison failed
+                E Obtained: 1999
+                E Expected: 1999.98 ± 0.00199998
 
-    def test_calculate_total_correct(self, order_service, product_service, product):
-        """Total should equal unit_price * quantity with decimal precision."""
-        # product.unit_price = 999.99, quantity = 2 → expected 1999.98
-        order = order_service.create_order(
-            user_id='usr-001',
-            items=[{'product_id': product.id, 'quantity': 2}],
-            product_service=product_service
-        )
-        total = order_service.calculate_total(order.id, product_service)
-&gt;       assert total == pytest.approx(1999.98)
-E       assert 1999 == 1999.98 ± 0.00199998
-E         
-E         comparison failed
-E         Obtained: 1999
-E         Expected: 1999.98 ± 0.00199998
+                demo_suite/tests/test_orders.py:93: AssertionError</failure>
+        </testcase>
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCalculations"
+            name="test_order_total_is_not_none" time="0.000" />
+        <testcase classname="demo_suite.tests.test_orders.TestOrderCalculations"
+            name="test_list_orders_by_user" time="0.000" />
+        <testcase classname="demo_suite.tests.test_products.TestProductCreation"
+            name="test_create_product_success" time="0.000">
+            <failure message="TypeError: can only concatenate str (not &quot;UUID&quot;) to str">self
+                = &lt;test_products.TestProductCreation object at 0x10b27f610&gt;
+                empty_product_service = &lt;src.products.ProductService object at 0x10b2bbc50&gt;
 
-demo_suite/tests/test_orders.py:93: AssertionError</failure></testcase><testcase classname="demo_suite.tests.test_orders.TestOrderCalculations" name="test_order_total_is_not_none" time="0.000" /><testcase classname="demo_suite.tests.test_orders.TestOrderCalculations" name="test_list_orders_by_user" time="0.000" /><testcase classname="demo_suite.tests.test_products.TestProductCreation" name="test_create_product_success" time="0.000"><failure message="TypeError: can only concatenate str (not &quot;UUID&quot;) to str">self = &lt;test_products.TestProductCreation object at 0x10aef56d0&gt;
-empty_product_service = &lt;src.products.ProductService object at 0x10ae4b3e0&gt;
+                def test_create_product_success(self, empty_product_service):
+                """Products can be created with valid data."""
+                &gt; product = empty_product_service.create_product(
+                name='Laptop', type='electronics', stock=10, unit_price=999.99
+                )
 
-    def test_create_product_success(self, empty_product_service):
-        """Products can be created with valid data."""
-&gt;       product = empty_product_service.create_product(
-            name='Laptop', type='electronics', stock=10, unit_price=999.99
-        )
+                demo_suite/tests/test_products.py:9:
+                _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+                _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-demo_suite/tests/test_products.py:9: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+                self = &lt;src.products.ProductService object at 0x10b2bbc50&gt;, name = 'Laptop',
+                type = 'electronics', stock = 10, unit_price = 999.99
 
-self = &lt;src.products.ProductService object at 0x10ae4b3e0&gt;, name = 'Laptop', type = 'electronics', stock = 10
-unit_price = 999.99
+                def create_product(self, name, type, stock, unit_price):
+                new_product = Product(
+                &gt; id='prd-'+ uuid.uuid4(),
+                ^^^^^^^^^^^^^^^^^^^^
+                name=name,
+                type=type,
+                stock=stock,
+                unit_price=unit_price
+                )
+                E TypeError: can only concatenate str (not "UUID") to str
+                demo_suite/src/products.py:23: TypeError</failure>
+        </testcase>
+        <testcase classname="demo_suite.tests.test_products.TestProductCreation"
+            name="test_created_product_is_retrievable" time="0.000">
+            <failure message="TypeError: can only concatenate str (not &quot;UUID&quot;) to str">self
+                = &lt;test_products.TestProductCreation object at 0x10b27f750&gt;
+                empty_product_service = &lt;src.products.ProductService object at 0x10b3689b0&gt;
 
-    def create_product(self, name, type, stock, unit_price):
-        new_product = Product(
-&gt;           id='prd-'+ uuid.uuid4(),
-               ^^^^^^^^^^^^^^^^^^^^
-            name=name,
-            type=type,
-            stock=stock,
-            unit_price=unit_price
-        )
-E       TypeError: can only concatenate str (not "UUID") to str
+                def test_created_product_is_retrievable(self, empty_product_service):
+                """A created product should be findable by its ID."""
+                &gt; product = empty_product_service.create_product(
+                name='Mouse', type='accessories', stock=50, unit_price=29.99
+                )
 
-demo_suite/src/products.py:23: TypeError</failure></testcase><testcase classname="demo_suite.tests.test_products.TestProductCreation" name="test_created_product_is_retrievable" time="0.000"><failure message="TypeError: can only concatenate str (not &quot;UUID&quot;) to str">self = &lt;test_products.TestProductCreation object at 0x10aef4f50&gt;
-empty_product_service = &lt;src.products.ProductService object at 0x10b2bc9b0&gt;
+                demo_suite/tests/test_products.py:17:
+                _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+                _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-    def test_created_product_is_retrievable(self, empty_product_service):
-        """A created product should be findable by its ID."""
-&gt;       product = empty_product_service.create_product(
-            name='Mouse', type='accessories', stock=50, unit_price=29.99
-        )
+                self = &lt;src.products.ProductService object at 0x10b3689b0&gt;, name = 'Mouse',
+                type = 'accessories', stock = 50, unit_price = 29.99
 
-demo_suite/tests/test_products.py:17: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+                def create_product(self, name, type, stock, unit_price):
+                new_product = Product(
+                &gt; id='prd-'+ uuid.uuid4(),
+                ^^^^^^^^^^^^^^^^^^^^
+                name=name,
+                type=type,
+                stock=stock,
+                unit_price=unit_price
+                )
+                E TypeError: can only concatenate str (not "UUID") to str
+                demo_suite/src/products.py:23: TypeError</failure>
+        </testcase>
+        <testcase classname="demo_suite.tests.test_products.TestProductCreation"
+            name="test_product_direct_instantiation" time="0.000" />
+        <testcase classname="demo_suite.tests.test_products.TestProductRetrieval"
+            name="test_get_nonexistent_product_raises" time="0.000" />
+        <testcase classname="demo_suite.tests.test_products.TestProductRetrieval"
+            name="test_get_existing_product_returns_object" time="0.000" />
+        <testcase classname="demo_suite.tests.test_products.TestProductUpdate"
+            name="test_update_product_name" time="0.000" />
+        <testcase classname="demo_suite.tests.test_products.TestProductUpdate"
+            name="test_update_stock_to_zero" time="0.000">
+            <failure
+                message="AssertionError: assert 10 == 0&#10; +  where 10 = get_product_stock('prd-test-001')&#10; +    where get_product_stock = &lt;src.products.ProductService object at 0x10b19abd0&gt;.get_product_stock&#10; +    and   'prd-test-001' = &lt;src.products.Product object at 0x10b33f690&gt;.id">self
+                = &lt;test_products.TestProductUpdate object at 0x10b27fc50&gt;
+                product_service = &lt;src.products.ProductService object at 0x10b19abd0&gt;, product
+                = &lt;src.products.Product object at 0x10b33f690&gt;
 
-self = &lt;src.products.ProductService object at 0x10b2bc9b0&gt;, name = 'Mouse', type = 'accessories', stock = 50
-unit_price = 29.99
+                def test_update_stock_to_zero(self, product_service, product):
+                """Setting stock to 0 should reflect as 0, not retain the old value."""
+                product_service.update_product(product.id, stock=0)
+                &gt; assert product_service.get_product_stock(product.id) == 0
+                E AssertionError: assert 10 == 0
+                E + where 10 = get_product_stock('prd-test-001')
+                E + where get_product_stock = &lt;src.products.ProductService object at
+                0x10b19abd0&gt;.get_product_stock
+                E + and 'prd-test-001' = &lt;src.products.Product object at 0x10b33f690&gt;.id
+                demo_suite/tests/test_products.py:55: AssertionError</failure>
+        </testcase>
+        <testcase classname="demo_suite.tests.test_products.TestProductUpdate"
+            name="test_delete_product" time="0.000">
+            <failure message="TypeError: can only concatenate str (not &quot;UUID&quot;) to str">self
+                = &lt;test_products.TestProductUpdate object at 0x10b3249d0&gt;
+                empty_product_service = &lt;src.products.ProductService object at 0x10b19ad50&gt;
 
-    def create_product(self, name, type, stock, unit_price):
-        new_product = Product(
-&gt;           id='prd-'+ uuid.uuid4(),
-               ^^^^^^^^^^^^^^^^^^^^
-            name=name,
-            type=type,
-            stock=stock,
-            unit_price=unit_price
-        )
-E       TypeError: can only concatenate str (not "UUID") to str
+                def test_delete_product(self, empty_product_service):
+                """Deleted product should not be retrievable."""
+                &gt; product = empty_product_service.create_product(
+                name='Headphones', type='audio', stock=5, unit_price=79.99
+                )
 
-demo_suite/src/products.py:23: TypeError</failure></testcase><testcase classname="demo_suite.tests.test_products.TestProductCreation" name="test_product_direct_instantiation" time="0.000" /><testcase classname="demo_suite.tests.test_products.TestProductRetrieval" name="test_get_nonexistent_product_raises" time="0.000" /><testcase classname="demo_suite.tests.test_products.TestProductRetrieval" name="test_get_existing_product_returns_object" time="0.000" /><testcase classname="demo_suite.tests.test_products.TestProductUpdate" name="test_update_product_name" time="0.000" /><testcase classname="demo_suite.tests.test_products.TestProductUpdate" name="test_update_stock_to_zero" time="0.000"><failure message="AssertionError: assert 10 == 0&#10; +  where 10 = get_product_stock('prd-test-001')&#10; +    where get_product_stock = &lt;src.products.ProductService object at 0x10b3cf290&gt;.get_product_stock&#10; +    and   'prd-test-001' = &lt;src.products.Product object at 0x10af2f310&gt;.id">self = &lt;test_products.TestProductUpdate object at 0x10aef5a90&gt;
-product_service = &lt;src.products.ProductService object at 0x10b3cf290&gt;
-product = &lt;src.products.Product object at 0x10af2f310&gt;
+                demo_suite/tests/test_products.py:59:
+                _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+                _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-    def test_update_stock_to_zero(self, product_service, product):
-        """Setting stock to 0 should reflect as 0, not retain the old value."""
-        product_service.update_product(product.id, stock=0)
-&gt;       assert product_service.get_product_stock(product.id) == 0
-E       AssertionError: assert 10 == 0
-E        +  where 10 = get_product_stock('prd-test-001')
-E        +    where get_product_stock = &lt;src.products.ProductService object at 0x10b3cf290&gt;.get_product_stock
-E        +    and   'prd-test-001' = &lt;src.products.Product object at 0x10af2f310&gt;.id
+                self = &lt;src.products.ProductService object at 0x10b19ad50&gt;, name =
+                'Headphones', type = 'audio', stock = 5, unit_price = 79.99
 
-demo_suite/tests/test_products.py:55: AssertionError</failure></testcase><testcase classname="demo_suite.tests.test_products.TestProductUpdate" name="test_delete_product" time="0.000"><failure message="TypeError: can only concatenate str (not &quot;UUID&quot;) to str">self = &lt;test_products.TestProductUpdate object at 0x10aef9220&gt;
-empty_product_service = &lt;src.products.ProductService object at 0x10b3cf410&gt;
+                def create_product(self, name, type, stock, unit_price):
+                new_product = Product(
+                &gt; id='prd-'+ uuid.uuid4(),
+                ^^^^^^^^^^^^^^^^^^^^
+                name=name,
+                type=type,
+                stock=stock,
+                unit_price=unit_price
+                )
+                E TypeError: can only concatenate str (not "UUID") to str
+                demo_suite/src/products.py:23: TypeError</failure>
+        </testcase>
+        <testcase classname="demo_suite.tests.test_products.TestProductSearch"
+            name="test_search_by_partial_name" time="0.000" />
+        <testcase classname="demo_suite.tests.test_products.TestProductSearch"
+            name="test_search_case_insensitive" time="0.000" />
+        <testcase classname="demo_suite.tests.test_products.TestProductSearch"
+            name="test_search_empty_inventory_returns_empty_list" time="0.000" />
+        <testcase classname="demo_suite.tests.test_users.TestUserRegistration"
+            name="test_register_user_success" time="0.000" />
+        <testcase classname="demo_suite.tests.test_users.TestUserRegistration"
+            name="test_register_duplicate_username_raises" time="0.000" />
+        <testcase classname="demo_suite.tests.test_users.TestUserRegistration"
+            name="test_register_duplicate_email_raises" time="0.000">
+            <failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">self =
+                &lt;test_users.TestUserRegistration object at 0x10b324c30&gt;, user_service =
+                &lt;src.users.UserService object at 0x10b341950&gt;
 
-    def test_delete_product(self, empty_product_service):
-        """Deleted product should not be retrievable."""
-&gt;       product = empty_product_service.create_product(
-            name='Headphones', type='audio', stock=5, unit_price=79.99
-        )
+                def test_register_duplicate_email_raises(self, user_service):
+                """Two accounts should not share the same email address."""
+                user_service.register('carol', 'carol@example.com', 'pass1')
+                &gt; with pytest.raises(ValueError):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+                E Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
 
-demo_suite/tests/test_products.py:59: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+                demo_suite/tests/test_users.py:22: Failed</failure>
+        </testcase>
+        <testcase classname="demo_suite.tests.test_users.TestUserRegistration"
+            name="test_register_missing_fields_raises" time="0.000" />
+        <testcase classname="demo_suite.tests.test_users.TestUserRegistration"
+            name="test_registered_user_is_retrievable" time="0.000" />
+        <testcase classname="demo_suite.tests.test_users.TestAuthentication"
+            name="test_authenticate_correct_credentials" time="0.000" />
+        <testcase classname="demo_suite.tests.test_users.TestAuthentication"
+            name="test_authenticate_wrong_password" time="0.000" />
+        <testcase classname="demo_suite.tests.test_users.TestAuthentication"
+            name="test_authenticate_is_case_sensitive" time="0.000">
+            <failure
+                message="AssertionError: assert True is False&#10; +  where True = authenticate('grace', 'secret')&#10; +    where authenticate = &lt;src.users.UserService object at 0x10b3a49e0&gt;.authenticate">self
+                = &lt;test_users.TestAuthentication object at 0x10b324fc0&gt;, user_service =
+                &lt;src.users.UserService object at 0x10b3a49e0&gt;
 
-self = &lt;src.products.ProductService object at 0x10b3cf410&gt;, name = 'Headphones', type = 'audio', stock = 5
-unit_price = 79.99
+                def test_authenticate_is_case_sensitive(self, user_service):
+                """Authentication should be case-sensitive — 'Secret' != 'secret'."""
+                user_service.register('grace', 'grace@example.com', 'Secret')
+                &gt; assert user_service.authenticate('grace', 'secret') is False
+                E AssertionError: assert True is False
+                E + where True = authenticate('grace', 'secret')
+                E + where authenticate = &lt;src.users.UserService object at
+                0x10b3a49e0&gt;.authenticate
 
-    def create_product(self, name, type, stock, unit_price):
-        new_product = Product(
-&gt;           id='prd-'+ uuid.uuid4(),
-               ^^^^^^^^^^^^^^^^^^^^
-            name=name,
-            type=type,
-            stock=stock,
-            unit_price=unit_price
-        )
-E       TypeError: can only concatenate str (not "UUID") to str
-
-demo_suite/src/products.py:23: TypeError</failure></testcase><testcase classname="demo_suite.tests.test_products.TestProductSearch" name="test_search_by_partial_name" time="0.000" /><testcase classname="demo_suite.tests.test_products.TestProductSearch" name="test_search_case_insensitive" time="0.000" /><testcase classname="demo_suite.tests.test_products.TestProductSearch" name="test_search_empty_inventory_returns_empty_list" time="0.000" /><testcase classname="demo_suite.tests.test_users.TestUserRegistration" name="test_register_user_success" time="0.001" /><testcase classname="demo_suite.tests.test_users.TestUserRegistration" name="test_register_duplicate_username_raises" time="0.000" /><testcase classname="demo_suite.tests.test_users.TestUserRegistration" name="test_register_duplicate_email_raises" time="0.000"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">self = &lt;test_users.TestUserRegistration object at 0x10aef9480&gt;
-user_service = &lt;src.users.UserService object at 0x10aef74d0&gt;
-
-    def test_register_duplicate_email_raises(self, user_service):
-        """Two accounts should not share the same email address."""
-        user_service.register('carol', 'carol@example.com', 'pass1')
-&gt;       with pytest.raises(ValueError):
-             ^^^^^^^^^^^^^^^^^^^^^^^^^
-E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
-
-demo_suite/tests/test_users.py:22: Failed</failure></testcase><testcase classname="demo_suite.tests.test_users.TestUserRegistration" name="test_register_missing_fields_raises" time="0.000" /><testcase classname="demo_suite.tests.test_users.TestUserRegistration" name="test_registered_user_is_retrievable" time="0.000" /><testcase classname="demo_suite.tests.test_users.TestAuthentication" name="test_authenticate_correct_credentials" time="0.000" /><testcase classname="demo_suite.tests.test_users.TestAuthentication" name="test_authenticate_wrong_password" time="0.000" /><testcase classname="demo_suite.tests.test_users.TestAuthentication" name="test_authenticate_is_case_sensitive" time="0.000"><failure message="AssertionError: assert True is False&#10; +  where True = authenticate('grace', 'secret')&#10; +    where authenticate = &lt;src.users.UserService object at 0x10aec56a0&gt;.authenticate">self = &lt;test_users.TestAuthentication object at 0x10aef96e0&gt;, user_service = &lt;src.users.UserService object at 0x10aec56a0&gt;
-
-    def test_authenticate_is_case_sensitive(self, user_service):
-        """Authentication should be case-sensitive — 'Secret' != 'secret'."""
-        user_service.register('grace', 'grace@example.com', 'Secret')
-&gt;       assert user_service.authenticate('grace', 'secret') is False
-E       AssertionError: assert True is False
-E        +  where True = authenticate('grace', 'secret')
-E        +    where authenticate = &lt;src.users.UserService object at 0x10aec56a0&gt;.authenticate
-
-demo_suite/tests/test_users.py:52: AssertionError</failure></testcase><testcase classname="demo_suite.tests.test_users.TestAuthentication" name="test_authenticate_nonexistent_user" time="0.000" /><testcase classname="demo_suite.tests.test_users.TestAuthentication" name="test_deactivate_user" time="0.000" /></testsuite></testsuites>
+                demo_suite/tests/test_users.py:52: AssertionError</failure>
+        </testcase>
+        <testcase classname="demo_suite.tests.test_users.TestAuthentication"
+            name="test_authenticate_nonexistent_user" time="0.000" />
+        <testcase classname="demo_suite.tests.test_users.TestAuthentication"
+            name="test_deactivate_user" time="0.000" />
+    </testsuite>
+</testsuites>
