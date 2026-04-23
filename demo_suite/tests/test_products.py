@@ -1,4 +1,5 @@
 import pytest
+from time import sleep
 from src.products import Product, ProductService
 
 
@@ -6,6 +7,7 @@ class TestProductCreation:
 
     def test_create_product_success(self, empty_product_service):
         """Products can be created with valid data."""
+        sleep(0.5)
         product = empty_product_service.create_product(
             name='Laptop', type='electronics', stock=10, unit_price=999.99
         )
@@ -14,6 +16,7 @@ class TestProductCreation:
 
     def test_created_product_is_retrievable(self, empty_product_service):
         """A created product should be findable by its ID."""
+        sleep(0.1)
         product = empty_product_service.create_product(
             name='Mouse', type='accessories', stock=50, unit_price=29.99
         )
