@@ -1,7 +1,7 @@
 
 class QualityGates():
     def __init__(self, metrics_summary, bug_reports):
-        self.metrics = metrics_summary['metrics']
+        self.metrics = metrics_summary
         self.bug_reports = bug_reports
         self.gates = self.evaluate()
 

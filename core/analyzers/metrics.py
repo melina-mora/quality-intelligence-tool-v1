@@ -37,10 +37,8 @@ class Metrics():
 
     def get_summary(self):
         return {
-            "metrics": {
                 "avg_total_duration": self.calc_avg_time_testcases(),
                 "test_run_pass_rate": self.calc_pass_rate(),
                 "slowest_testcase": self.calc_slowest_testcase(),
                 "most_problematic_testsuite": self.calc_most_problematic_testsuite()
-            }
         }

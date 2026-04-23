@@ -1,5 +1,6 @@
-from graph.state import ReviewState
 import json
+from core.graph.state import ReviewState
+
 
 def node_output(state: ReviewState) -> dict:
     output = {
@@ -7,4 +8,4 @@ def node_output(state: ReviewState) -> dict:
         "quality_gates": state.get('quality_gates'),
         "ai_analysis": state.get("ai_report")
     }
-    return {"output": json.dumps(output)}
+    return {"output": json.dumps(output,indent=2)}

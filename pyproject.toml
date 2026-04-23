@@ -6,10 +6,39 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "anthropic>=0.96.0",
+    "langgraph>=1.1.9",
     "pytest>=9.0.3",
     "requests>=2.33.1",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["demo_suite/tests"]
-pythonpath = ["demo_suite"]
+pythonpath = ["demo_suite", "core"]
+
+[tool.pylint.main]
+init-hook = 'import sys; sys.path.extend(["demo_suite", "core"])'
+
+[tool.pylint.messages_control]
+disable = [
+    "C0111",  # missing-docstring
+    "C0103",  # invalid-name
+    "C0304",  # missing-final-newline
+    "W0212",  # protected-access
+    "W0401",  # wildcard-import
+    "R0913",  # too-many-arguments
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.design]
+max-attributes = 10
+max-args = 8
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "ex", "Run", "_"]
+
+[dependency-groups]
+dev = [
+    "pylint>=4.0.5",
+]

@@ -1,30 +1,26 @@
-import core.parsers.xml_parser as xml
-import core.parsers.csv_parser as csv
-import core.analyzers.metrics as metrics
-import time
-from core.analyzers.quality_gates import QualityGates
-from core.analyzers.test_run_analyzer import analyze
+import argparse
+from core.graph.graph import build_graph
 
 
 def main():
-    report = xml.Report('data/test_run.xml').get_final_report()
-    bug_reports = csv.parse('data/bugs.csv')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input-xml", type=str, help="Path to XML file", required=True)
+    parser.add_argument("--input-bug-list", type=str, help="Path to bugs CSV file", required=True)
+    parser.add_argument("--output", type=str, help="Where to store the output report", default="reports")
+    parser.add_argument("--format", type=str, choices=['html', 'markdown'], default='html', help="Output format type")
 
-    m = metrics.Metrics(report)
-    gates = QualityGates(m.summary, bug_reports)
+    args = parser.parse_args()
 
-    print("=== METRICS ===")
-    print(m.summary)
+    input_state = {
+        "xml_path": args.input_xml,
+        "csv_path": args.input_bug_list
+    }
 
-    print("\n=== QUALITY GATES ===")
-    for gate in gates.gates:
-        print(gate)
+    compiled_graph = build_graph()
+    result = compiled_graph.invoke(input_state)
+    output = result.get("output")
 
-    print("\n=== AI ANALYSIS ===")
-    t1 = time.time()
-    print(analyze(report['test_cases']))
-    t2 = time.time()
-    print(f"Analysis time: {t2-t1}")
+    print(output)
 
 if __name__ == "__main__":
     main()
