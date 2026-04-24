@@ -32,7 +32,7 @@ class Metrics():
 
         if not failures_by_suite:
             return None
-
+        
         return max(failures_by_suite, key=lambda k: failures_by_suite[k])
 
     def get_summary(self):

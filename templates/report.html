@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quality Intelligence Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    /* ── Header ── */
+    .header {
+      margin-bottom: 2rem;
+    }
+    .header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .header .meta {
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Metric cards ── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem;
+    }
+    .card .label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-bottom: 0.5rem;
+    }
+    .card .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .card .sub {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Middle row: chart + gates ── */
+    .middle-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      align-items: start;
+    }
+    @media (max-width: 640px) {
+      .middle-row { grid-template-columns: 1fr; }
+    }
+    .chart-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .chart-card .chart-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .chart-wrapper {
+      position: relative;
+      width: 160px;
+      height: 160px;
+    }
+    .chart-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .chart-center .pct {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .chart-center .pct-label {
+      font-size: 0.65rem;
+      color: #94a3b8;
+    }
+
+    /* ── Quality gates ── */
+    .gates-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.4rem;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      min-width: 360px;
+    }
+    thead th {
+      text-align: left;
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0 0.75rem 0.75rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    tbody td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .badge-pass { background: #dcfce7; color: #16a34a; }
+    .badge-fail { background: #fee2e2; color: #dc2626; }
+
+    /* ── AI Findings ── */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .finding-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem;
+      border-left: 3px solid #e2e8f0;
+    }
+    .finding-card.HIGH   { border-left-color: #ef4444; }
+    .finding-card.MEDIUM { border-left-color: #f59e0b; }
+    .finding-card.LOW    { border-left-color: #22c55e; }
+    .finding-card.ERROR  { border-left-color: #94a3b8; }
+
+    .finding-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .sev-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+    }
+    .sev-HIGH   { background: #fee2e2; color: #dc2626; }
+    .sev-MEDIUM { background: #fef3c7; color: #d97706; }
+    .sev-LOW    { background: #dcfce7; color: #16a34a; }
+    .sev-ERROR  { background: #f1f5f9; color: #64748b; }
+
+    .confidence {
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    .finding-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+    .finding-row {
+      font-size: 0.8rem;
+      color: #475569;
+      margin-bottom: 0.4rem;
+      line-height: 1.5;
+    }
+    .finding-row span {
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    .test-name {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.75rem;
+      background: #f1f5f9;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      color: #6366f1;
+    }
+
+    /* ── Governance footer ── */
+    .governance {
+      margin-top: 2rem;
+      padding: 1rem 1.4rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    .governance strong { color: #64748b; }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      body { padding: 1rem; }
+      .header h1 { font-size: 1.3rem; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .findings-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Quality Intelligence Report</h1>
+    <div class="meta">{{ suite_name }}/tests/ &nbsp;·&nbsp; {{ report_date }}</div>
+  </div>
+
+  <!-- Metric cards -->
+  <p class="section-title">Metrics</p>
+  <div class="metrics-grid">
+    <div class="card">
+      <div class="label">Pass Rate</div>
+      <div class="value">{{ metrics.test_run_pass_rate }}%</div>
+    </div>
+    <div class="card">
+      <div class="label">Avg Runtime</div>
+      <div class="value">{{ metrics.avg_total_duration }}s</div>
+    </div>
+    <div class="card">
+      <div class="label">Slowest Test</div>
+      <div class="value">{{ metrics.slowest_testcase.duration }}s</div>
+      <div class="sub">{{ metrics.slowest_testcase.name }}</div>
+    </div>
+    <div class="card">
+      <div class="label">Most Problematic Suite</div>
+      <div class="value" style="font-size:0.85rem; padding-top:0.3rem; word-break: break-word;">{{ metrics.most_problematic_testsuite }}</div>
+    </div>
+  </div>
+
+  <!-- Chart + Quality Gates -->
+  <div class="middle-row">
+
+    <div class="chart-card">
+      <div class="chart-label">Pass Rate</div>
+      <div class="chart-wrapper">
+        <canvas id="passChart"></canvas>
+        <div class="chart-center">
+          <div class="pct">{{ metrics.test_run_pass_rate }}%</div>
+          <div class="pct-label">passing</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gates-card">
+      <p class="section-title">Quality Gates</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Gate</th>
+            <th>Expected</th>
+            <th>Actual</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for gate in quality_gates %}
+          <tr>
+            <td>{{ gate.name }}</td>
+            <td>{{ gate.threshold }}</td>
+            <td>{{ gate.actual }}</td>
+            <td>
+              {% if gate.result == "PASS" %}
+                <span class="badge badge-pass">PASS</span>
+              {% else %}
+                <span class="badge badge-fail">FAIL</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- AI Findings -->
+  <p class="section-title">AI Analysis — {{ findings | length }} findings</p>
+  <div class="findings-grid">
+    {% for f in findings %}
+    <div class="finding-card {{ f.severity }}">
+      <div class="finding-header">
+        <span class="sev-badge sev-{{ f.severity }}">{{ f.severity }}</span>
+        <span class="confidence">{{ f.confidence }}% confidence</span>
+      </div>
+      <div class="finding-title">{{ f.title }}</div>
+      <div class="finding-row"><span>Test</span> &nbsp;<span class="test-name">{{ f.test }}</span></div>
+      <div class="finding-row"><span>Cause</span> &nbsp;{{ f.cause }}</div>
+      <div class="finding-row"><span>Limitation</span> &nbsp;{{ f.limitation }}</div>
+      <div class="finding-row"><span>Possible fix</span> &nbsp;{{ f.possible_fix }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- AI Governance -->
+  <div class="governance">
+    <strong>AI Governance:</strong> Findings generated by a local language model ({{ suite_name }} analyzer).
+    Confidence scores are model-estimated and may not reflect actual accuracy.
+    Always verify root causes against source code before acting on recommendations.
+  </div>
+
+  <script>
+    const passRate = {{ metrics.test_run_pass_rate }};
+    const ctx = document.getElementById("passChart").getContext("2d");
+    new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        datasets: [{
+          data: [passRate, 100 - passRate],
+          backgroundColor: ["#6366f1", "#e2e8f0"],
+          borderWidth: 0,
+          hoverOffset: 0
+        }]
+      },
+      options: {
+        cutout: "72%",
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        animation: { duration: 800 }
+      }
+    });
+  </script>
+
+</body>
+</html>

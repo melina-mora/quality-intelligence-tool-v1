@@ -26,7 +26,8 @@ Respond with a single JSON object in this exact format:
   "title": "root cause description in one sentence",
   "test": "test_name",
   "cause": "one sentence explaining the root cause",
-  "limitation": "what you could not determine from the data alone"
+  "limitation": "what you could not determine from the data alone",
+  "possible_fix": "a concise suggestion for how to fix the issue, if the issue is suspected to be in the test script or the code under test, if it's not possible to determine, say 'unknown', do not attempt to suggest a fix if the confidence is below 50%"
 }
 
 

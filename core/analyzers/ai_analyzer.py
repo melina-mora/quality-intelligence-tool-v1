@@ -1,10 +1,18 @@
 import json
+import re
 from pathlib import Path
 from core.ollama_client import chat
 
 
 INSTRUCTIONS_PATH = Path(__file__).parent.parent / "agents" / "instructions" / "test_run.md"
 MODEL = "deepseek-r1:14b"
+
+def _extract_json(text):
+    match = re.search(r'\{.*\}', text, re.DOTALL)
+
+    if match:
+        return match.group()
+    return text
 
 
 def _load_system_prompt():
@@ -34,8 +42,8 @@ def analyze(test_cases):
     results = []
     for f in user_message:
         try:
-            response = json.loads(chat(MODEL, system_prompt, f))
-            results.append(response)
+            content = _extract_json(chat(MODEL, system_prompt, f))
+            results.append(json.loads(content))
         except json.JSONDecodeError as err:
             results.append({"severity":"ERROR", "title":"Failed to parse model response", "cause": str(err)})
 

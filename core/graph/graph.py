@@ -4,7 +4,6 @@ from core.graph import nodes
 
 
 def build_graph():
-    print("DEBUG: build graph")
     graph = StateGraph(ReviewState)
 
     #Utility nodes
@@ -38,6 +37,5 @@ def build_graph():
 
     #Output
     graph.add_edge("Output", END)
-    print("DEBUG: graph built")
 
     return graph.compile()
