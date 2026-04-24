@@ -46,7 +46,7 @@ The split between deterministic and AI analysis is intentional: quality gates ne
 
 ## Prerequisites
 
-- Python 3.12+
+- Python 3.14+
 - [uv](https://docs.astral.sh/uv/) (package manager)
 - [Ollama](https://ollama.com/) installed and running
 
@@ -85,7 +85,9 @@ The `data/bugs.csv` file is already included — it contains 10 bug reports in J
 uv run python main.py --input-xml data/test_run.xml --input-bug-list data/bugs.csv
 ```
 
-The report is saved to `reports/test_analysis_YYYY-MM-DD_HHMMSS.html`. Open it in any browser.
+Optional: use `--output <dir>` to save the report to a different directory (default: `reports/`).
+
+The report is saved to `<output>/test_analysis_YYYY-MM-DD_HHMMSS.html`. Open it in any browser.
 
 **First run takes 3–5 minutes** (the model analyzes each failure separately). After that, use `--rebuild` to re-render the report from cached data without calling the model again:
 
@@ -164,4 +166,4 @@ I also changed the AI output format mid-project: the model was originally return
 | 2 | Done | Ollama integration + deterministic analyzers |
 | 3 | Done | LangGraph pipeline (6 nodes) |
 | 4 | Done | HTML report with Jinja2 + Chart.js |
-| 5 | Planned | Self-healing prototype |
+| 5 | Planned in a future update | Self-healing prototype |
