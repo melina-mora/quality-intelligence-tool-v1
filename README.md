@@ -17,7 +17,7 @@ You point it at a JUnit XML test output and a bug report CSV, and it produces a 
 - **AI Analysis** — per-failure root cause analysis with severity and confidence scores
 - **AI Governance** — explicit limitations section; confidence scores are model-estimated, not facts
 
-The AI runs fully locally via Ollama — no API keys, no internet connection required.
+The AI runs fully locally via Ollama — no API keys, no internet connection required (except for the Pie chart library loaded from CDN).
 
 ---
 
