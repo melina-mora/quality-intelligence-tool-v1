@@ -77,6 +77,8 @@ uv run pytest demo_suite/tests/ --junit-xml=data/test_run.xml -v
 
 The `data/bugs.csv` file is already included — it contains 10 bug reports in Jira-like format.
 
+**Why two separate files?** They model two different data sources that in a real project would also be separate. The XML is pytest output — what happened during execution, including tracebacks and runtimes. The CSV simulates a bug tracker like Jira — human knowledge about known issues, severity, and affected modules. pytest knows nothing about your Jira, and Jira knows nothing about your last CI run. The pipeline joins them: `xml_parser` and `csv_parser` run in parallel, and the AI analyzer receives both to cross-reference them when analyzing each failure.
+
 ---
 
 ## Run the pipeline
