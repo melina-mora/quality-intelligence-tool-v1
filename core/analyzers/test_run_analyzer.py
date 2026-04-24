@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from core.ollama_client import chat
 
@@ -26,12 +27,16 @@ def _get_failures(test_cases):
 def analyze(test_cases):
     user_message = _get_failures(test_cases)
     if user_message is None:
-        return "No failures found in this test run."
+        return []
 
     system_prompt = _load_system_prompt()
 
     results = []
     for f in user_message:
-        results.append(chat(MODEL, system_prompt, f))
+        try:
+            response = json.loads(chat(MODEL, system_prompt, f))
+            results.append(response)
+        except json.JSONDecodeError as err:
+            results.append({"severity":"ERROR", "title":"Failed to parse model response", "cause": str(err)})
 
-    return "\n".join(results)
+    return results
